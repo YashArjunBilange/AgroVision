@@ -17,7 +17,7 @@ model = load_model()
 choice = st.radio("Select input method:", ["Upload Image", "Use Webcam"])
 image = None
 if choice == "Upload Image":
-    uploaded_file = st.file_uploader("Upload a leaf image", type=["jpg","jpeg","png"])
+    uploaded_file = st.file_uploader("Upload a leaf image", type=["jpg","jpeg","png","webp"])
     if uploaded_file:
         image = Image.open(uploaded_file).convert("RGB")
 elif choice == "Use Webcam":
