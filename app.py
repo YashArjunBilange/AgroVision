@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 from ultralytics import YOLO
-import remedies
+import remedies  # your remedies.py file
 
 # ---------------------------
 # Page Configuration
@@ -12,7 +12,7 @@ st.set_page_config(
 )
 
 st.title("🌿 Plant Disease Detection")
-st.write("Upload a leaf image or take a photo to get disease prediction and remedies.")
+st.write("Upload a leaf image or take a photo, then click 'Detect Disease' to get prediction and remedies.")
 
 # ---------------------------
 # Load YOLOv8 Model
@@ -39,31 +39,34 @@ elif choice == "Use Webcam":
         image = Image.open(webcam_image).convert("RGB")
 
 # ---------------------------
-# Prediction
+# Show image
 # ---------------------------
 if image:
     st.image(image, caption="Input Image", use_column_width=True)
 
-    with st.spinner("Predicting..."):
-        results = model.predict(image, verbose=False)
+    # ---------------------------
+    # Detect Disease Button
+    # ---------------------------
+    if st.button("Detect Disease"):
+        with st.spinner("Predicting..."):
+            results = model.predict(image, verbose=False)
 
-        # Safe extraction of predicted class
-        try:
-            # Attempt to get first class prediction
-            pred_class = list(results[0].names.values())[0]
-        except Exception:
-            st.error("Cannot extract prediction from this model.")
-            pred_class = None
+            # Safe extraction of predicted class
+            try:
+                pred_class = list(results[0].names.values())[0]
+            except Exception:
+                st.error("Cannot extract prediction from this model.")
+                pred_class = None
 
-        if pred_class:
-            st.success(f"**Prediction:** {pred_class}")
+            if pred_class:
+                st.success(f"**Prediction:** {pred_class}")
 
-            # Remedies
-            if hasattr(remedies, pred_class):
-                st.markdown(f"### Remedies for {pred_class}:")
-                st.write(getattr(remedies, pred_class))
-            else:
-                st.write("Remedy not found for this disease.")
+                # Remedies
+                if hasattr(remedies, pred_class):
+                    st.markdown(f"### Remedies for {pred_class}:")
+                    st.write(getattr(remedies, pred_class))
+                else:
+                    st.write("Remedy not found for this disease.")
 
 # ---------------------------
 # Footer
