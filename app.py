@@ -49,8 +49,13 @@ if image:
 
     with st.spinner("Predicting..."):
         results = model.predict(image)
-        # Assuming classification: get the top predicted class
-        prediction = results[0].names[int(results[0].probs.argmax())]  # classification label
+        try:
+            class_idx = int(results[0].probs.argmax())  # top probability
+            prediction = results[0].names[class_idx]
+        except AttributeError:
+            # fallback if probs not available
+            prediction = results[0].names[int(results[0].boxes.cls[0])]
+            
         st.success(f"**Prediction:** {prediction}")
 
         # Remedies
