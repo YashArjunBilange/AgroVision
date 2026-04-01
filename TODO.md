@@ -1,21 +1,16 @@
-# Agrovision Render FINAL FIX
+# Render Deploy - Deploy Phase Fix
 
-**Issue:** --index-url overrode PyPI (no streamlit in torch CPU index).
+**Status:** BUILD SUCCESS ✅ | Deploy fails on 'auto' start.
 
-**Fix:** --extra-index-url for torch CPU + default PyPI for streamlit/etc.
+**Fix Procfile:**
+web: streamlit run app.py --server.port ${PORT:=8501} --server.address 0.0.0.0 --server.headless true
 
-requirements.txt:
-```
---extra-index-url https://download.pytorch.org/whl/cpu
-torch
-torchvision
-streamlit==1.38.0
-Pillow
-ultralytics
-opencv-python-headless
-```
-(1.38.0 latest stable 3.10 compat; unpinned others).
+**Critical: Render Dashboard Settings:**
+1. Service → Settings
+2. Build Command: `pip install -r requirements.txt`
+3. Start Command: `streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true`
+4. Save → Manual Deploy.
 
-.python-version: 3.10.11
+This forces commands, detects port.
 
-Push & deploy—build succeeds!
+Push Procfile update, set manual commands → LIVE!
